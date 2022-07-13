@@ -8,6 +8,10 @@ public class Test {
 
         System.out.println(p);
         System.out.println(p.getClasse());
-        System.out.println(m);
+
+        for( int i = 0; i < 5; i++ )
+            p.monterDeNiveau();
+
+        System.out.println(p);
     }
 }

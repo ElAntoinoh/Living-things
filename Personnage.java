@@ -6,7 +6,6 @@ public class Personnage extends Vivant {
 
     private int niveau;
 
-    // Classes
     private ArrayList<Classe> listeClasses;
     private Classe classe;
 
@@ -14,7 +13,6 @@ public class Personnage extends Vivant {
         this.nom    = nom;
         this.niveau = 1;
 
-        // Classes
         this.listeClasses = new ArrayList<>(Arrays.asList(classe));
         this.classe = classe;
 
@@ -28,6 +26,24 @@ public class Personnage extends Vivant {
         this.defenseMagique = 2;
 
         Personnage.listePersonnages.add(this);
+    }
+
+    public void monterDeNiveau() {
+        this.niveau++;
+
+        Classe classe = this.getClasse();
+
+        this.pv    += classe.getPv();
+        this.pvMax += classe.getPv();
+
+        this.pm    += classe.getPm();
+        this.pmMax += classe.getPm();
+
+        this.attaque        += classe.getAttaque();
+        this.attaqueMagique += classe.getAttaqueMagique();
+
+        this.defense        += classe.getDefense();
+        this.defenseMagique += classe.getDefenseMagique();
     }
 
     // Accesseurs
