@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Monstre extends Vivant {
     static ArrayList<Monstre> listeMonstres = new ArrayList<>();

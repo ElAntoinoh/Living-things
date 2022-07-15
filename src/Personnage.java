@@ -1,55 +1,82 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
 public class Personnage extends Vivant {
     static ArrayList<Personnage> listePersonnages = new ArrayList<>();
 
+    private HashMap<Classe, Integer> listeClasses;
+    private Classe classe;
     private int niveau;
 
-    private ArrayList<Classe> listeClasses;
-    private Classe classe;
+    private int pvBruts;
+    private int pmBruts;
+
+    private int attaqueBrute;
+    private int attaqueMagiqueBrute;
+
+    private int defenseBrute;
+    private int defenseMagiqueBrute;
 
     public Personnage(String nom, Classe classe) {
-        this.nom    = nom;
-        this.niveau = 1;
+        this.nom = nom;
 
-        this.listeClasses = new ArrayList<>(Arrays.asList(classe));
-        this.classe = classe;
+        this.listeClasses = new HashMap<>();
+        this.listeClasses.put(this.classe = classe, this.niveau = 1);
 
-        this.pv = this.pvMax = 10;
-        this.pm = this.pmMax = 5;
+        this.pv = this.pvMax = this.pvBruts = 10;
+        this.pm = this.pmMax = this.pmBruts = 5;
 
-        this.attaque        = 4;
-        this.attaqueMagique = 2;
+        this.attaque        = this.attaqueBrute        = 4;
+        this.attaqueMagique = this.attaqueMagiqueBrute = 2;
 
-        this.defense        = 4;
-        this.defenseMagique = 2;
+        this.defense        = this.defenseBrute        = 4;
+        this.defenseMagique = this.defenseMagiqueBrute = 2;
 
         Personnage.listePersonnages.add(this);
     }
 
     public void monterDeNiveau() {
-        this.niveau++;
+        listeClasses.replace(classe, this.niveau++, this.niveau);
 
-        Classe classe = this.getClasse();
+        recalculerStatistiques();
 
-        this.pv    += classe.getPv();
-        this.pvMax += classe.getPv();
+        this.pv += this.classe.getPv();
+        this.pm += this.classe.getPm();
+    }
 
-        this.pm    += classe.getPm();
-        this.pmMax += classe.getPm();
+    private void recalculerStatistiques() {
+        this.pvMax = this.pvBruts + this.niveau * this.classe.getPv();
+        this.pmMax = this.pmBruts + this.niveau * this.classe.getPm();
 
-        this.attaque        += classe.getAttaque();
-        this.attaqueMagique += classe.getAttaqueMagique();
+        this.attaque        = this.attaqueBrute        + this.niveau * this.classe.getAttaque();
+        this.attaqueMagique = this.attaqueMagiqueBrute + this.niveau * this.classe.getAttaqueMagique();
 
-        this.defense        += classe.getDefense();
-        this.defenseMagique += classe.getDefenseMagique();
+        this.defense        = this.defenseBrute        + this.niveau * this.classe.getDefense();
+        this.defenseMagique = this.defenseMagiqueBrute + this.niveau * this.classe.getDefenseMagique();
+
+        if( this.pv > this.pvMax ) this.pv = this.pvMax;
+        if( this.pm > this.pmMax ) this.pm = this.pmMax;
+    }
+
+    public void changerDeClasse(Classe newClasse) {
+        System.out.println(this.listeClasses.get(this.classe));
+
+        this.classe = newClasse;
+
+        if( this.listeClasses.containsKey(newClasse) )
+            this.niveau = this.listeClasses.get(newClasse);
+        else
+            listeClasses.put(newClasse, this.niveau = 1);
+
+        recalculerStatistiques();
     }
 
     // Accesseurs
-    public int               getNiveau () { return this.niveau;       }
-    public ArrayList<Classe> getClasses() { return this.listeClasses; }
-    public Classe            getClasse () { return this.classe;       }
+    public int                      getNiveau () { return this.niveau;       }
+    public HashMap<Classe, Integer> getClasses() { return this.listeClasses; }
+    public Classe                   getClasse () { return this.classe;       }
+    public int                      getPvBruts() { return this.pvBruts;      }
+    public int                      getPmBruts() { return this.pmBruts;      }
 
     public String toString() {
         return String.format("%s (%s niveau %d)\n", this.nom.toUpperCase(), this.classe.getNom(), this.niveau) +
