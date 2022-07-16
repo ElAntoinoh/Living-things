@@ -1,13 +1,12 @@
+package Metier;
+
 import java.util.ArrayList;
 
-public class Equipement extends Statistics {
-    static ArrayList<Equipement> listeEquipements = new ArrayList<>();
+public class Classe extends Statistics {
+    public static ArrayList<Classe> listeClasses = new ArrayList<>();
 
-    private String type;
-
-    public Equipement(String nom, String type, int pv, int pm, int attaque, int attaqueMagique, int defense, int defenseMagique) {
+    public Classe(String nom, int pv, int pm, int attaque, int attaqueMagique, int defense, int defenseMagique) {
         this.nom = nom;
-        this.type = type;
 
         this.pv = pv;
         this.pm = pm;
@@ -18,10 +17,8 @@ public class Equipement extends Statistics {
         this.defense        = defense;
         this.defenseMagique = defenseMagique;
 
-        Equipement.listeEquipements.add(this);
+        Classe.listeClasses.add(this);
     }
-
-    public String getType() { return this.type; }
 
     public String toString() {
         return this.nom.toUpperCase() + ":\n" +

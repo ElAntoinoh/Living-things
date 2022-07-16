@@ -1,3 +1,5 @@
+package Metier;
+
 public class Statistics {
     protected String nom;
 

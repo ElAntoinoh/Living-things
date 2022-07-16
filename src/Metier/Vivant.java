@@ -1,3 +1,5 @@
+package Metier;
+
 public class Vivant extends Statistics {
     protected int pvMax;
     protected int pmMax;

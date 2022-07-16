@@ -1,0 +1,4 @@
+Gants|mains|0|0|0|0|4|0
+Jambières magiques|jambes|0|1|0|1|0|1
+Armure|torse|0|0|0|0|6|0
+Épée solide|arme|0|0|6|0|0|0

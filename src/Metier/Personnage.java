@@ -1,8 +1,10 @@
+package Metier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Personnage extends Vivant {
-    static ArrayList<Personnage> listePersonnages = new ArrayList<>();
+    public static ArrayList<Personnage> listePersonnages = new ArrayList<>();
 
     private HashMap<Classe, Integer> listeClasses;
     private Classe classe;

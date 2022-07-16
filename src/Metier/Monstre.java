@@ -1,7 +1,9 @@
+package Metier;
+
 import java.util.ArrayList;
 
 public class Monstre extends Vivant {
-    static ArrayList<Monstre> listeMonstres = new ArrayList<>();
+    public static ArrayList<Monstre> listeMonstres = new ArrayList<>();
 
     public Monstre(String nom, int pv, int pm, int attaque, int attaqueMagique, int defense, int defenseMagique) {
         this.nom = nom;
