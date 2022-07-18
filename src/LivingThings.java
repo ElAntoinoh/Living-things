@@ -6,6 +6,22 @@ import java.util.Scanner;
 public class LivingThings {
     public static void main(String[] args) throws Exception {
         chargerFichiers(new String[] { "classes.txt", "equipements.txt", "monstres.txt", "personnages.txt" });
+
+        Personnage antoine = Personnage.getPersonnageByID(0);
+
+        System.out.println(antoine);
+
+        System.out.println(Equipement.listeEquipements.get(0));
+
+        antoine.recupererEquipement(Equipement.listeEquipements.get(0));
+
+        antoine.equiper(0);
+
+        System.out.println(antoine);
+
+        antoine.desequiper(3);
+
+        System.out.println(antoine);
     }
 
     static void chargerFichiers(String[] tabFichiers) throws Exception {

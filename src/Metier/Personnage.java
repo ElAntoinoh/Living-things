@@ -120,10 +120,14 @@ public class Personnage extends Vivant {
 
     public void equiper(int indice) {
         this.inventaire.equiper(indice);
+
+        recalculerStatistiques();
     }
 
     public void desequiper(int indice) {
         this.inventaire.desequiper(indice);
+
+        recalculerStatistiques();
     }
     //#endregion
 
@@ -131,17 +135,31 @@ public class Personnage extends Vivant {
     //#region Statistiques
     /**
      * Méthode qui recalcule les statistiques d'un Personnage.
-     * Appelée à un changer de Classe ou à une montée de niveau
+     * Appelée à un changer de Classe, à une montée de niveau ou à l'ajout/retrait d'un équipement
      */
     private void recalculerStatistiques() {
-        this.pvMax = this.pvBruts + this.niveau * this.classe.getPv();
-        this.pmMax = this.pmBruts + this.niveau * this.classe.getPm();
+        this.pvMax = this.pvBruts + (this.niveau - 1) * this.classe.getPv();
+        this.pmMax = this.pmBruts + (this.niveau - 1) * this.classe.getPm();
 
-        this.attaque        = this.attaqueBrute        + this.niveau * this.classe.getAttaque();
-        this.attaqueMagique = this.attaqueMagiqueBrute + this.niveau * this.classe.getAttaqueMagique();
+        this.attaque        = this.attaqueBrute        + (this.niveau - 1) * this.classe.getAttaque();
+        this.attaqueMagique = this.attaqueMagiqueBrute + (this.niveau - 1) * this.classe.getAttaqueMagique();
 
-        this.defense        = this.defenseBrute        + this.niveau * this.classe.getDefense();
-        this.defenseMagique = this.defenseMagiqueBrute + this.niveau * this.classe.getDefenseMagique();
+        this.defense        = this.defenseBrute        + (this.niveau - 1) * this.classe.getDefense();
+        this.defenseMagique = this.defenseMagiqueBrute + (this.niveau - 1) * this.classe.getDefenseMagique();
+
+        // Prise en compte des équipements du Personnage
+        for( Equipement equipement : this.inventaire.getTenue() ) {
+            if( equipement == null ) continue;
+            
+            this.pvMax += equipement.getPv();
+            this.pmMax += equipement.getPm();
+
+            this.attaque        += equipement.getAttaque();
+            this.attaqueMagique += equipement.getAttaqueMagique();
+
+            this.defense        += equipement.getDefense();
+            this.defenseMagique += equipement.getDefenseMagique();
+        }
 
         // Vérification que les points de vie et les points de magie ne dépassent pas leur maximum
         if( this.pv > this.pvMax ) this.pv = this.pvMax;
