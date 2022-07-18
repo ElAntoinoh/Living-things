@@ -6,24 +6,6 @@ import java.util.Scanner;
 public class LivingThings {
     public static void main(String[] args) throws Exception {
         chargerFichiers(new String[] { "classes.txt", "equipements.txt", "monstres.txt", "personnages.txt" });
-
-        for( Classe classe : Classe.listeClasses )
-            System.out.println(classe);
-
-        System.out.println("====================\n");
-
-        for( Equipement equipement : Equipement.listeEquipements )
-            System.out.println(equipement);
-        
-        System.out.println("====================\n");
-
-        for( Monstre monstre : Monstre.listeMonstres )
-            System.out.println(monstre);
-        
-        System.out.println("====================\n");
-
-        for( Personnage personnage : Personnage.listePersonnages )
-            System.out.println(personnage);
     }
 
     static void chargerFichiers(String[] tabFichiers) throws Exception {

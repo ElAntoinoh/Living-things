@@ -10,6 +10,9 @@ import java.util.HashMap;
 public class Personnage extends Vivant {
     public static ArrayList<Personnage> listePersonnages = new ArrayList<>();
 
+    private static int nbPersonnages = 0;
+    private int id;
+
     // Le personnage a une liste de classes déjà pratiquées
     // Chaque classe a un niveau indépendant des autres classes
     private HashMap<Classe, Integer> listeClasses;
@@ -30,10 +33,7 @@ public class Personnage extends Vivant {
     private int defenseMagiqueBrute;
 
     // Inventaire
-    // Une partie pour la tenue et une pour le reste des équipements
-    private Equipement[] tenue;
-    private Equipement[] stockEquipements;
-
+    private Inventaire inventaire;
 
     /**
      * Constructeur de la classe Personnage
@@ -41,6 +41,8 @@ public class Personnage extends Vivant {
      * @param classe Classe du Personnage
      */
     public Personnage(String nom, Classe classe) {
+        this.id = Personnage.nbPersonnages++;
+
         this.nom = nom;
 
         // Initialisation de la liste des Classes du Personnage
@@ -58,14 +60,14 @@ public class Personnage extends Vivant {
         this.defenseMagique = this.defenseMagiqueBrute = 2;
 
         // Inventaire
-        this.tenue            = new Equipement[6 ];
-        this.stockEquipements = new Equipement[20];
+        this.inventaire = new Inventaire();
 
         // Ajout du Personnage à la liste de tous les Personnages
         Personnage.listePersonnages.add(this);
     }
 
 
+    //#region Classes
     /**
      * Méthode appelée à la montée de niveau d'un Personnage.
      * Elle met à jour le niveau de la Classe actuelle puis recalcule ses statistiques
@@ -78,26 +80,6 @@ public class Personnage extends Vivant {
         // Les gains de points de vie et de magie s'appliquent également aux points de vie et magie actuels
         this.pv += this.classe.getPv();
         this.pm += this.classe.getPm();
-    }
-
-
-    /**
-     * Méthode qui recalcule les statistiques d'un Personnage.
-     * Appelée à un changer de Classe ou à une montée de niveau
-     */
-    private void recalculerStatistiques() {
-        this.pvMax = this.pvBruts + this.niveau * this.classe.getPv();
-        this.pmMax = this.pmBruts + this.niveau * this.classe.getPm();
-
-        this.attaque        = this.attaqueBrute        + this.niveau * this.classe.getAttaque();
-        this.attaqueMagique = this.attaqueMagiqueBrute + this.niveau * this.classe.getAttaqueMagique();
-
-        this.defense        = this.defenseBrute        + this.niveau * this.classe.getDefense();
-        this.defenseMagique = this.defenseMagiqueBrute + this.niveau * this.classe.getDefenseMagique();
-
-        // Vérification que les points de vie et les points de magie ne dépassent pas leur maximum
-        if( this.pv > this.pvMax ) this.pv = this.pvMax;
-        if( this.pm > this.pmMax ) this.pm = this.pmMax;
     }
 
 
@@ -116,21 +98,117 @@ public class Personnage extends Vivant {
 
         recalculerStatistiques();
     }
-
-    //#region Acesseurs
-    public int                      getNiveau          () { return this.niveau;           }
-    public HashMap<Classe, Integer> getClasses         () { return this.listeClasses;     }
-    public Classe                   getClasse          () { return this.classe;           }
-    public int                      getPvBruts         () { return this.pvBruts;          }
-    public int                      getPmBruts         () { return this.pmBruts;          }
-    public Equipement[]             getTenue           () { return this.tenue;            }
-    public Equipement[]             getStockEquipements() { return this.stockEquipements; }
     //#endregion
 
+
+    //#region Equipements
+    /**
+     * Insert un Equipement à la première place disponible dans l'inventaire du Personnage courant
+     * @param equipement Equipement à insérer dans l'inventaire
+     */
+    public void recupererEquipement(Equipement equipement) {
+        this.inventaire.recupererEquipement(equipement);
+    }
+
+    /**
+     * Retire un Equipement du stock d'Equipement du Personnage courant
+     * @param indice Indice de l'Equipement dans le tableau
+     */
+    public void jeterEquipement(int indice) {
+        this.inventaire.jeterEquipement(indice);
+    }
+
+    public void equiper(int indice) {
+        this.inventaire.equiper(indice);
+    }
+
+    public void desequiper(int indice) {
+        this.inventaire.desequiper(indice);
+    }
+    //#endregion
+
+
+    //#region Statistiques
+    /**
+     * Méthode qui recalcule les statistiques d'un Personnage.
+     * Appelée à un changer de Classe ou à une montée de niveau
+     */
+    private void recalculerStatistiques() {
+        this.pvMax = this.pvBruts + this.niveau * this.classe.getPv();
+        this.pmMax = this.pmBruts + this.niveau * this.classe.getPm();
+
+        this.attaque        = this.attaqueBrute        + this.niveau * this.classe.getAttaque();
+        this.attaqueMagique = this.attaqueMagiqueBrute + this.niveau * this.classe.getAttaqueMagique();
+
+        this.defense        = this.defenseBrute        + this.niveau * this.classe.getDefense();
+        this.defenseMagique = this.defenseMagiqueBrute + this.niveau * this.classe.getDefenseMagique();
+
+        // Vérification que les points de vie et les points de magie ne dépassent pas leur maximum
+        if( this.pv > this.pvMax ) this.pv = this.pvMax;
+        if( this.pm > this.pmMax ) this.pm = this.pmMax;
+    }
+    //#endregion
+
+
+    //#region Acesseurs
+    public int                      getIDJoueur  () { return this.id;           }
+    public int                      getNiveau    () { return this.niveau;       }
+    public HashMap<Classe, Integer> getClasses   () { return this.listeClasses; }
+    public Classe                   getClasse    () { return this.classe;       }
+    public int                      getPvBruts   () { return this.pvBruts;      }
+    public int                      getPmBruts   () { return this.pmBruts;      }
+    public Inventaire               getInventaire() { return this.inventaire;   }
+    //#endregion
+
+
+    /**
+     * Renvoie le Personnage associé à l'indice passé en paramètre
+     * @param id Indice du Personnage
+     * @return Personnage recherché ou null si inexistant
+     */
+    public static Personnage getPersonnageByID(int id) {
+        for( Personnage personnage : Personnage.listePersonnages )
+            if( personnage.getIDJoueur() == id )
+                return personnage;
+        
+        return null;
+    }
+
+
     public String toString() {
-        return String.format("%s (%s niveau %d)\n", this.nom.toUpperCase(), this.classe.getNom(), this.niveau) +
+        int taille = 1;
+
+        // Récupération de la longueur du nom d'équipement le plus long des équipements de la tenue
+        for( Equipement equipement : this.inventaire.getTenue() )
+            if( equipement != null ) {
+                // On ne prend pas en compte l'arme du Personnage
+                if( equipement.getType().equals("arme") ) continue;
+
+                if( taille < equipement.getNom().length() )
+                    taille = equipement.getNom().length();
+            }
+
+        String str = "";
+        
+        // Statistiques du Personnage
+        str +=
+            String.format("%s (%s niveau %d)\n", this.nom.toUpperCase(), this.classe.getNom(), this.niveau) +
             String.format("  pv: %9s | pm:         %9s\n", this.pv + "/" + this.pvMax, this.pm + "/" + this.pmMax) +
             String.format("  attaque: %4d | attaque magique: %4d\n", this.attaque, this.attaqueMagique) +
             String.format("  defense: %4d | defense magique: %4d\n", this.defense, this.defenseMagique);
+
+        // Trait de séparation
+        str += String.format("- - - - - - - - - - - - - - - - - - - -\n");
+
+        // Affichage de la tenue du Personnage
+        str += String.format("[%" + taille + "s] ", this.inventaire.getTete() != null ? this.inventaire.getTete().getNom() : " " );
+        str += "[" + ( this.inventaire.getArme() != null ? this.inventaire.getArme().getNom() : " " ) + "]\n";
+
+        str += String.format("[%-" + taille + "s]\n", this.inventaire.getTorse () != null ? this.inventaire.getTorse ().getNom() : " " );
+        str += String.format("[%-" + taille + "s]\n", this.inventaire.getJambes() != null ? this.inventaire.getJambes().getNom() : " " );
+        str += String.format("[%-" + taille + "s]\n", this.inventaire.getMains () != null ? this.inventaire.getMains ().getNom() : " " );
+        str += String.format("[%-" + taille + "s]\n", this.inventaire.getPieds () != null ? this.inventaire.getPieds ().getNom() : " " );
+        
+        return str;
     }
 }

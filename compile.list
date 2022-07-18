@@ -1,11 +1,13 @@
 -d bin
--encoding utf-8
+-encoding utf8
 
 src/LivingThings.java
 
 src/Metier/Classe.java
 src/Metier/Equipement.java
+src/Metier/Inventaire.java
 src/Metier/Monstre.java
 src/Metier/Personnage.java
 src/Metier/Statistics.java
+src/Metier/Utils.java
 src/Metier/Vivant.java
